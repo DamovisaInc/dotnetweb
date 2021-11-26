@@ -17,7 +17,7 @@ jobs:
     name: Deploy to Staging
     environment: 
       name: Staging
-      url: https://dotnetmona-staging.azurewebsites.net/
+      url: https://mona-dotnetweb-staging.azurewebsites.net/
     
     runs-on: ubuntu-latest
 
@@ -38,10 +38,10 @@ jobs:
       run: |
         dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/dotnetweb 
         
-    - name: 'Deploy to https://dotnetmona.azurewebsites.net/'
+    - name: 'Deploy to https://mona-dotnetweb-staging.azurewebsites.net/'
       uses: azure/webapps-deploy@v2
       with: 
-        app-name: dotnetmona-staging
+        app-name: mona-dotnetweb-staging
         # Publish directly to Production for pushes into master
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         package: ${{env.DOTNET_ROOT}}/dotnetweb 
@@ -51,7 +51,7 @@ jobs:
     name: Deploy to Prod
     environment: 
       name: Prod
-      url: https://dotnetmona.azurewebsites.net/
+      url: https://mona-dotnetweb.azurewebsites.net/
     needs: [staging]
     
     runs-on: ubuntu-latest
@@ -73,10 +73,10 @@ jobs:
       run: |
         dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/dotnetweb 
         
-    - name: 'Deploy to https://dotnetmona.azurewebsites.net/'
+    - name: 'Deploy to https://mona-dotnetweb.azurewebsites.net/'
       uses: azure/webapps-deploy@v2
       with: 
-        app-name: dotnetmona
+        app-name: mona-dotnetweb
         # Publish directly to Production for pushes into master
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         package: ${{env.DOTNET_ROOT}}/dotnetweb 
