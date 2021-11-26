@@ -1,0 +1,83 @@
+name: Publish
+
+# Run on new release creation or when manually triggered
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: 'Where to release (staging or prod)?'     
+        required: true
+        default: 'prod'
+
+jobs:
+  staging:
+
+    name: Deploy to Staging
+    environment: 
+      name: Staging
+      url: https://dotnetmona-staging.azurewebsites.net/
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - run: env
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.100'
+      
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+      
+    - name: dotnet publish
+      run: |
+        dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/dotnetweb 
+        
+    - name: 'Deploy to https://dotnetmona.azurewebsites.net/'
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: dotnetmona-staging
+        # Publish directly to Production for pushes into master
+        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+        package: ${{env.DOTNET_ROOT}}/dotnetweb 
+
+  prod:
+
+    name: Deploy to Prod
+    environment: 
+      name: Prod
+      url: https://dotnetmona.azurewebsites.net/
+    needs: [staging]
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - run: env
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.100'
+      
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+      
+    - name: dotnet publish
+      run: |
+        dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/dotnetweb 
+        
+    - name: 'Deploy to https://dotnetmona.azurewebsites.net/'
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: dotnetmona
+        # Publish directly to Production for pushes into master
+        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+        package: ${{env.DOTNET_ROOT}}/dotnetweb 
+      

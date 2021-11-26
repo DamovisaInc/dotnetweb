@@ -1,0 +1,26 @@
+{
+    "name": "ASP.NET",
+    "build": {
+      "dockerfile": "Dockerfile",
+      "args": {
+        "USERNAME": "vscode",
+        "INSTALL_NODE": "false",
+        "NODE_VERSION": "lts/*",
+        "INSTALL_AZURE_CLI": "true"
+      }    
+    },
+    "extensions": [
+        "ms-dotnettools.csharp",
+        "coenraads.bracket-pair-colorizer-2"
+    ],
+    "remoteUser": "vscode",
+    "forwardPorts": [5000, 5001],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "files.exclude": {
+            "**/.gitignore": true,
+            "**/SECURITY.md": true,
+            "**/LICENSE": true
+        }
+    }
+}
