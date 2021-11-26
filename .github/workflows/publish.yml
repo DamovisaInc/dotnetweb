@@ -9,7 +9,7 @@ on:
       releaseType:
         description: 'Where to release (staging or prod)?'     
         required: true
-        default: 'prod'
+        default: 'staging'
 
 jobs:
   staging:
@@ -47,7 +47,7 @@ jobs:
         package: ${{env.DOTNET_ROOT}}/dotnetweb 
 
   prod:
-
+    if: github.event.inputs.releaseType == 'prod'
     name: Deploy to Prod
     environment: 
       name: Prod
