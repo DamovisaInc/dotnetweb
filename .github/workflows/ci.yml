@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        donet: [5.0.103, 3.1.100]
+        dotnet: [6.0.100, 5.0.103, 3.1.100]
 
     runs-on: ${{ matrix.os }}
 
@@ -25,7 +25,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.103
+        dotnet-version: ${{ matrix.dotnet }}
     
     - name: Build with dotnet
       run: dotnet build --configuration Release
