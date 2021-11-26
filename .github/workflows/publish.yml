@@ -41,10 +41,10 @@ jobs:
     - name: 'Deploy to https://mona-dotnetweb-staging.azurewebsites.net/'
       uses: azure/webapps-deploy@v2
       with: 
-        app-name: mona-dotnetweb-staging
-        # Publish directly to Production for pushes into master
+        app-name: mona-dotnetweb
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         package: ${{env.DOTNET_ROOT}}/dotnetweb 
+        slot-name: staging
 
   prod:
     if: github.event.inputs.releaseType == 'prod'
@@ -77,7 +77,6 @@ jobs:
       uses: azure/webapps-deploy@v2
       with: 
         app-name: mona-dotnetweb
-        # Publish directly to Production for pushes into master
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         package: ${{env.DOTNET_ROOT}}/dotnetweb 
       
