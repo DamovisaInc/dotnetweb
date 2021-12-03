@@ -4,24 +4,29 @@ name: Publish to Azure
 on:
   workflow_call:
     inputs:
-      releaseType:
-        description: 'Where to release (Staging or Prod)?'     
+      envName:
+        description: "The environment to deploy to (Staging or Production)"
         required: true
-        default: 'Staging'
+        default: "Staging"
+      envUrl:
+        description: "The URL to deploy to"
+        required: true
+        default: "https://mona-dotnetweb-staging.azurewebsites.net/"
+      slotName:
+        description: "The Azure Web App Slot to deploy to"
+        retured: true
+        default: "staging"
     secrets:
       azureWebAppPublishProfile:
         required: true
 
 jobs:
   deploy:
-    env:
-      releaseUrl: ${{ inputs.releaseType == 'Prod' && 'https://mona-dotnetweb.azurewebsites.net/' || 'https://mona-dotnetweb-staging.azurewebsites.net/' }}
-      slotName: ${{ inputs.releaseType == 'Prod' && 'production' || 'staging' }}
-
+    
     name: Deploy to ${{ inputs.releaseType }}
     environment: 
-      name: ${{ inputs.releaseType }}
-      url: ${{ env.releaseUrl }}
+      name: ${{ inputs.envName }}
+      url: ${{ inputs.envUrl }}
     
     runs-on: ubuntu-latest
 
@@ -42,10 +47,10 @@ jobs:
       run: |
         dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/dotnetweb 
         
-    - name: 'Deploy to ${{ inputs.releaseType }} '
+    - name: 'Deploy to ${{ inputs.envName }} '
       uses: azure/webapps-deploy@v2
       with: 
         app-name: mona-dotnetweb
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
         package: ${{env.DOTNET_ROOT}}/dotnetweb 
-        slot-name: ${{ env.slotName }}
+        slot-name: ${{ inputs.slotName }}
