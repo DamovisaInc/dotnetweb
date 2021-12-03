@@ -16,7 +16,7 @@ on:
         type: string
       slotName:
         description: "The Azure Web App Slot to deploy to"
-        retured: true
+        required: true
         default: "staging"
         type: string
     secrets:
