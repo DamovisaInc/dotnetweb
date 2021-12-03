@@ -8,14 +8,17 @@ on:
         description: "The environment to deploy to (Staging or Production)"
         required: true
         default: "Staging"
+        type: string
       envUrl:
         description: "The URL to deploy to"
         required: true
         default: "https://mona-dotnetweb-staging.azurewebsites.net/"
+        type: string
       slotName:
         description: "The Azure Web App Slot to deploy to"
         retured: true
         default: "staging"
+        type: string
     secrets:
       azureWebAppPublishProfile:
         required: true
