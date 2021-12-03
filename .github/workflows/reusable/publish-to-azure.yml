@@ -1,0 +1,51 @@
+name: Publish to Azure
+
+# Run on call from other workflow
+on:
+  workflow_call:
+    inputs:
+      releaseType:
+        description: 'Where to release (Staging or Prod)?'     
+        required: true
+        default: 'Staging'
+    secrets:
+      azureWebAppPublishProfile:
+        required: true
+
+jobs:
+  deploy:
+    env:
+      releaseUrl: ${{ inputs.releaseType == 'Prod' && 'https://mona-dotnetweb.azurewebsites.net/' || 'https://mona-dotnetweb-staging.azurewebsites.net/' }}
+      slotName: ${{ inputs.releaseType == 'Prod' && 'production' || 'staging' }}
+
+    name: Deploy to ${{ inputs.releaseType }}
+    environment: 
+      name: ${{ inputs.releaseType }}
+      url: ${{ env.releaseUrl }}
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - run: env
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.100'
+      
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+      
+    - name: dotnet publish
+      run: |
+        dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/dotnetweb 
+        
+    - name: 'Deploy to ${{ inputs.releaseType }} '
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: mona-dotnetweb
+        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+        package: ${{env.DOTNET_ROOT}}/dotnetweb 
+        slot-name: ${{ env.slotName }}
