@@ -16,7 +16,7 @@ jobs:
     environment:
       name: Staging
       url: https://mona-dotnetweb-staging.azurewebsites.net/
-    uses: damovisaInc/dotnetweb/.github/workflows/reusable/publish-to-azure.yml@main
+    uses: damovisaInc/dotnetweb/.github/workflows/publish-to-azure.yml@main
     with:
       releaseType: "Staging"
     secrets:
@@ -28,7 +28,7 @@ jobs:
     environment:
       name: Prod
       url: https://mona-dotnetweb.azurewebsites.net/
-    uses: damovisaInc/dotnetweb/.github/workflows/reusable/publish-to-azure.yml@main
+    uses: damovisaInc/dotnetweb/.github/workflows/publish-to-azure.yml@main
     with:
       releaseType: "Prod"
     secrets:
