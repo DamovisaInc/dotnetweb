@@ -13,24 +13,22 @@ on:
 
 jobs:
   staging:
-    environment:
-      name: Staging
-      url: https://mona-dotnetweb-staging.azurewebsites.net/
     uses: damovisaInc/dotnetweb/.github/workflows/publish-to-azure.yml@main
     with:
-      releaseType: "Staging"
+      envName: "Staging"
+      envUrl: "https://mona-dotnetweb-staging.azurewebsites.net/"
+      slotName: "staging"
     secrets:
       azureWebAppPublishProfile: ${{ secrets.azureWebAppPublishProfile }}
 
   prod:
     if: github.event.inputs.releaseType == 'prod'
     needs: [staging]
-    environment:
-      name: Prod
-      url: https://mona-dotnetweb.azurewebsites.net/
     uses: damovisaInc/dotnetweb/.github/workflows/publish-to-azure.yml@main
     with:
-      releaseType: "Prod"
+      envName: "Staging"
+      envUrl: "https://mona-dotnetweb.azurewebsites.net/"
+      slotName: "production"
     secrets:
       azureWebAppPublishProfile: ${{ secrets.azureWebAppPublishProfile }}
     
