@@ -19,6 +19,10 @@ on:
         required: true
         default: "staging"
         type: string
+      artifactName:
+        description: "The name of the artifact uploaded with actions/upload-artifact"
+        required: true
+        type: string
     secrets:
       azureWebAppPublishProfile:
         required: true
@@ -34,26 +38,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    
-    - run: env
-    
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+
+    - name: Download artifact
+      uses: actions/download-artifact@v2
       with:
-        dotnet-version: '5.0.100'
-      
-    - name: Build with dotnet
-      run: dotnet build --configuration Release
-      
-    - name: dotnet publish
-      run: |
-        dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/dotnetweb 
+        name: ${{ inputs.artifactName }}
+        path: ./dotnetweb
         
     - name: 'Deploy to ${{ inputs.envName }} '
       uses: azure/webapps-deploy@v2
       with: 
         app-name: mona-dotnetweb
         publish-profile: ${{ secrets.azureWebAppPublishProfile }}
-        package: ${{env.DOTNET_ROOT}}/dotnetweb 
+        package: ./dotnetweb 
         slot-name: ${{ inputs.slotName }}
