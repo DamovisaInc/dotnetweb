@@ -8,5 +8,5 @@ Simple ASP.NET Core website using Razorpages.
  - [Production](https://dotnetmona.azurewebsites.net/)
 
   
- Any questions? [@martinwoodward](https://twitter.com/martinwoodward).
+ Any questions? [@damovisa](https://twitter.com/damovisa).
  
