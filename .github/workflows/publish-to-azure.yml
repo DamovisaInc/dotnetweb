@@ -1,0 +1,54 @@
+name: Publish to Azure
+
+# Run on call from other workflow
+on:
+  workflow_call:
+    inputs:
+      envName:
+        description: "The environment to deploy to (Staging or Production)"
+        required: true
+        default: "Staging"
+        type: string
+      envUrl:
+        description: "The URL to deploy to"
+        required: true
+        default: "https://mona-dotnetweb-staging.azurewebsites.net/"
+        type: string
+      slotName:
+        description: "The Azure Web App Slot to deploy to"
+        required: true
+        default: "staging"
+        type: string
+      artifactName:
+        description: "The name of the artifact uploaded with actions/upload-artifact"
+        required: true
+        type: string
+    secrets:
+      azureWebAppPublishProfile:
+        required: true
+
+jobs:
+  deploy:
+    
+    name: Deploy to ${{ inputs.releaseType }}
+    environment: 
+      name: ${{ inputs.envName }}
+      url: ${{ inputs.envUrl }}
+    
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ inputs.artifactName }}
+        path: ./dotnetweb
+        
+    - name: 'Deploy to ${{ inputs.envName }} '
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: mona-dotnetweb
+        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+        package: ./dotnetweb 
+        slot-name: ${{ inputs.slotName }}

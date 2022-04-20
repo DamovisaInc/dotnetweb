@@ -1,0 +1,34 @@
+name: Publish Reusable
+
+# Run on new release creation or when manually triggered
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: 'Where to release (staging or prod)?'     
+        required: true
+        default: 'staging'
+
+jobs:
+  staging:
+    uses: damovisaInc/dotnetweb/.github/workflows/publish-to-azure.yml@main
+    with:
+      envName: "Staging"
+      envUrl: "https://mona-dotnetweb-staging.azurewebsites.net/"
+      slotName: "staging"
+    secrets:
+      azureWebAppPublishProfile: ${{ secrets.azureWebAppPublishProfile }}
+
+  prod:
+    if: github.event.inputs.releaseType == 'prod'
+    needs: [staging]
+    uses: damovisaInc/dotnetweb/.github/workflows/publish-to-azure.yml@main
+    with:
+      envName: "Prod"
+      envUrl: "https://mona-dotnetweb.azurewebsites.net/"
+      slotName: "production"
+    secrets:
+      azureWebAppPublishProfile: ${{ secrets.azureWebAppPublishProfile }}
+    
