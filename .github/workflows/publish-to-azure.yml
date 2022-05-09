@@ -15,7 +15,7 @@ on:
         default: "https://mona-dotnetweb-staging.azurewebsites.net/"
         type: string
       slotName:
-        description: "The Azure Web App Slot to deploy to"
+        description: "The Azure Web App Slot to deploy the app to"
         required: true
         default: "staging"
         type: string
