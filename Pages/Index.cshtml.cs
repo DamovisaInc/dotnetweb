@@ -18,7 +18,8 @@ namespace dotnetweb.Pages
                     ".NET all the things!",
                     "Would you like a Cup<T>?",
                     "Hello world!",
-                    "Would you like to play a game?"
+                    "Would you like to play a game?",
+                    "All your base are belong to us!"
                 };
             }
         }
